@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <body class="lift:content_id=main">
+    <div id="main" data-lift="surround?with=default;at=content">
+      <div class="lift:FileUploadSnippet">
+        <script data-lift="head" src="/js/vendor/jquery.ui.widget.js"></script>
+        <script data-lift="head" src="/js//jquery.iframe-transport.js"></script>
+        <script data-lift="head" src="/js/jquery.fileupload.js"></script>
+        <script data-lift="head" src="/js/jquery.fileupload-ui.js"></script>
+        <!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
+        <link data-lift="head" rel="stylesheet" href="/css/jquery.fileupload-ui.css">
+        <script id="uploadScript"></script>
+        <div class="hero-unit">
+          <h1 id="main-msg">File Upload</h1>
+          <form>
+            <p>
+              <span class="btn btn-small fileinput-button">
+                <i class="icon-plus"></i>
+                <span>Add file</span>
+                <input id="uploadFile" type="file"
+                       name="file[]" multiple>
+              </span>
+            </p>
+            <p>
+              <table role="presentation" class="table table-striped">
+                <tbody class="files">
+                </tbody>
+              </table>
+            </p>  
+          </form>
+        </div>
+        <script>
+ $(document).ready(function () {
+  $('#uploadFile').fileupload({
+    url: uploadUrl,
+    dataType: 'json',
+    autoUpload: true,
+
+    //previewSourceMaxFileSize: 1,
+    filesContainer: $('.files'),
+    uploadTemplateId: null,
+    downloadTemplateId: null,
+    uploadTemplate: function (o) {
+      var rows = $();
+      $.each(o.files, function (index, file) {
+        var row = $('<tr class="template-upload fade">' +
+                    '<td class="name"></td>' +
+                    '<td class="size"></td>' +
+                    (file.error ? '<td class="error" colspan="2"></td>' : '<td><div class="progress">' +
+                     '<div class="bar" style="width:0%;"></div></div></td>'));
+        row.find('.name').text(file.name);
+        row.find('.size').text(o.formatFileSize(file.size));
+        if (file.error) {
+          row.find('.error').text(file.error);
+        }
+        rows = rows.add(row);});
+      return rows;
+    },
+    downloadTemplate: function (o) {
+      var rows = $();
+      $.each(o.files, function (index, file) {
+        var row = $('<tr class="template-download fade">' +
+                    (file.error ? '<td class="name"></td>' +
+                     '<td class="size"></td><td class="error text-error" colspan="2"></td>' :
+                     '<td class="name"></td>' +
+                     '<td class="size"></td><td colspan="2" class="text-success">Uploaded</td>'
+                     ));
+        row.find('.size').text(o.formatFileSize(file.size));
+        if (file.error) {
+          row.find('.name').text(file.name);
+          row.find('.error').text(file.error);
+        } else {
+          row.find('.name').text(file.name);
+        }
+
+        rows = rows.add(row);
+      });
+      return rows;
+    }
+  });
+});
+        </script>
+      </div>
+    </div>
+  </body>
+</html>
